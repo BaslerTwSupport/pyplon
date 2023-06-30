@@ -1,2 +1,8 @@
 # pyplon
-pylon SDK example for python
+pylon SDK examples for python
+
+##  Installation
+
+```console
+pip install -r requirements.txt
+```
