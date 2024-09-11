@@ -14,15 +14,14 @@ def main():
     print("Using device ", camera.GetDeviceInfo().GetModelName())
 
     # demonstrate some feature access
-    new_width = camera.Width.GetValue() - camera.Width.GetInc()
-    if new_width >= camera.Width.GetMin():
-        camera.Width.SetValue(new_width)
 
     # The parameter MaxNumBuffer can be used to control the count of buffers
     # allocated for grabbing. The default value of this parameter is 10.
     camera.MaxNumBuffer = 5
 
-    camera.TriggerMode.Value = "Off"
+    camera.TriggerSelector.Value = "FrameStart"
+    camera.TriggerMode.Value = "On"
+    camera.TriggerSource.Value = "Line1"
 
     # Start the grabbing of c_countOfImagesToGrab images.
     # The camera device is parameterized with a default configuration which
@@ -31,8 +30,9 @@ def main():
 
     clear_buffer(camera)
 
-    switch = 0
     while camera.IsGrabbing():
+        if camera.WaitForFrameTriggerReady(200, pylon.TimeoutHandling_ThrowException):
+            continue
         # Wait for an image and then retrieve it. A timeout of 5000 ms is used.
         grabResult = camera.RetrieveResult(200, pylon.TimeoutHandling_ThrowException)
         try:
